@@ -12,17 +12,14 @@ class OfflineKeywordListener:
         rospy.init_node("miro_offline_keyword_listener")
 
         self.robot_name = rospy.get_param("~robot_name", "miro")
-
-        # 初始化头部控制发布器
         self.pub_head = rospy.Publisher(
             f"/{self.robot_name}/control/kinematic_joints",
             JointState, queue_size=0
         )
 
-        # 初始化尾巴控制发布器（可与头部共用话题）
         self.pub_tail = self.pub_head
 
-        # 加载离线语音识别模型（路径根据你本地情况修改）
+        # 加载离线语音识别模型
         self.model = Model(r"/home/mima1234/vosk-model")
         self.rec = KaldiRecognizer(self.model, 16000)
 
@@ -99,8 +96,6 @@ class OfflineKeywordListener:
         rospy.sleep(0.3)
         msg.position = [0.0]
         self.pub_tail.publish(msg)
-
-    # ======= 公共函数 =======
 
     def set_head(self, pitch=0.0, yaw=0.0):
         msg = JointState()
